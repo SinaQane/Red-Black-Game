@@ -1,10 +1,17 @@
 package controller;
 
+import constant.Constants;
 import model.RedBlackTree;
 import model.Result;
 
 public class GameController {
     public TreeController treeController = new TreeController();
+
+    public GameController() {
+        if (Constants.BOT_MODE && Constants.BOT_PLAYER == 1) {
+            isMoveCompleted(1, Constants.BOT_PLAYER);
+        }
+    }
 
     public boolean isFirstPlayersTurn() {
         return treeController.firstPlayersTurn;
@@ -18,11 +25,23 @@ public class GameController {
         } else if (treeController.exists(number) == 0) {
             treeController.rbTree.add(number, player);
             treeController.firstPlayersTurn = !treeController.firstPlayersTurn;
+
+            if (Constants.BOT_MODE && player != Constants.BOT_PLAYER) {
+                int bestMove = BotController.bestMove(treeController.rbTree);
+                isMoveCompleted(bestMove, Constants.BOT_PLAYER);
+            }
+
             return true;
         } else if (treeController.exists(number) == player) {
             treeController.rbTree.delete(number);
             treeController.rbTree.add(number + 32, player);
             treeController.firstPlayersTurn = !treeController.firstPlayersTurn;
+
+            if (Constants.BOT_MODE && player != Constants.BOT_PLAYER) {
+                int bestMove = BotController.bestMove(treeController.rbTree);
+                isMoveCompleted(bestMove, Constants.BOT_PLAYER);
+            }
+
             return true;
         }
 

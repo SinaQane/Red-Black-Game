@@ -4,6 +4,36 @@ public class RedBlackTree<K extends Comparable<K>, V> {
     public RedBlackNode<K, V> root;
     public int size;
 
+    public RedBlackTree<K, V> copy() {
+        RedBlackTree<K, V> clone = new RedBlackTree<>();
+        clone.root = new RedBlackNode<>(null);
+        clone.root.parent = root.parent;
+        clone.root.key = root.key;
+        clone.root.value = root.value;
+        clone.root.isBlack = root.isBlack;
+        clone.root.isNull = root.isNull;
+
+        copy(new RedBlackNullNode<>(null), clone.root, root);
+        return clone;
+    }
+
+    private void copy(RedBlackNode<K,V> parent, RedBlackNode<K,V> clone, RedBlackNode<K,V> original) {
+        clone.parent = parent;
+        clone.key = original.key;
+        clone.value = original.value;
+        clone.isBlack = original.isBlack;
+        clone.isNull = original.isNull;
+        clone.left = new RedBlackNode<>(clone);
+        clone.right = new RedBlackNode<>(clone);
+
+        if (original.left != null && !original.left.isNull) {
+            copy(clone, clone.left, original.left);
+        }
+        if (original.right != null && !original.right.isNull) {
+            copy(clone, clone.right, original.right);
+        }
+    }
+
     public int getDepth() {
         return this.getDepth(root);
     }
